@@ -1,9 +1,0 @@
-{
-  "intelephense.phpdoc.textFormat": "text",
-  "intelephense.phpdoc.useFullyQualifiedNames": true,
-  "php.validate.run": "onType",
-  "editor.defaultFormatter": "bmewburn.vscode-intelephense-client",
-  "notebook.defaultFormatter": "bmewburn.vscode-intelephense-client",
-  "intelephense.environment.documentRoot": "",
-  "php.validate.executablePath": "C:\\xampp\\php\\php.exe"
-}
