@@ -1,7 +1,7 @@
 {
     "name": "koderpedia/labayar",
     "description": "CRM addon for your laravel ecommerce",
-    "type": "plugin",
+    "type": "project",
     "require": {
         "php": "^8",
         "laravel/framework": ">=8",
@@ -18,5 +18,14 @@
             "name": "masraga",
             "email": "github.ragamulia@gmail.com"
         }
-    ]
+    ],
+    "extra": {
+        "laravel":{
+            "providers": [
+                "Koderpedia\\Labayar\\LabayarServiceProvider"
+            ]
+        }
+    },
+    "version": "1.0.0-dev",
+    "minimum-stability": "dev"
 }
