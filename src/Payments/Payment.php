@@ -32,6 +32,7 @@ class Payment
       ->setPaymentMethod("cash", "cash")
       ->setOrderId($request["orderId"])
       ->setCustomer($request["customer"])
-      ->setItems($request["items"]);
+      ->setItems($request["items"])
+      ->create();
   }
 }

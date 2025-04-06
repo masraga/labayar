@@ -37,7 +37,7 @@ class Cash implements IMethod
   public function use(string $type)
   {
     $validType = ["cash"];
-    if(!in_array($type, $validType)){
+    if (!in_array($type, $validType)) {
       throw new Error("$type not supported for labayar $this->label method");
     }
     $this->type = $type;
@@ -54,12 +54,23 @@ class Cash implements IMethod
   }
 
   /**
+   * Get payment method label
+   * example:
+   * cash, bankTransfer, creditCard
+   */
+  public function getLabel(): string
+  {
+    return $this->label;
+  }
+
+  /**
    * Calculate total purchase order
    * 
    * @param mixed $items Purchase item
    * @return mixed
    */
-  public function calculateOrder(array $items): array {
+  public function calculateOrder(array $items): array
+  {
     return $this->setItems($items)->calculate();
   }
 

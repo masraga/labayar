@@ -43,11 +43,12 @@ class Labayar implements IProvider
   {
     if ($method == "cash") {
       $this->payment = new Cash();
-    }
-    else {
+    } else {
       throw new Error("$method not supported for labayar");
     }
     $this->payment->use($type);
+    $this->payload["paymentMethod"] = $this->payment->getLabel();
+    $this->payload["paymentType"] = $this->payment->getType();
     return $this;
   }
 
@@ -63,9 +64,9 @@ class Labayar implements IProvider
       "email" => "required|email",
       "phone" => "required",
     ], [
-      "name.required" => "Name is required",
-      "email.required" => "Email is required",
-      "phone.required" => "Phone is required",
+      "name.required" => "Customer name is required",
+      "email.required" => "Customer email is required",
+      "phone.required" => "Customer phone is required",
     ]);
     if ($validator->fails()) {
       throw new Error($validator->errors());
@@ -89,8 +90,8 @@ class Labayar implements IProvider
     $validator = Validator::make($items, [
       "*.productId" => "required|string",
       "*.name" => "required|string",
-      "*.quantity" => "required|number",
-      "*.price" => "required|number",
+      "*.quantity" => "required|numeric",
+      "*.price" => "required|numeric",
     ]);
     if ($validator->fails()) {
       throw new Error($validator->errors());

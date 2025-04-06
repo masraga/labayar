@@ -26,6 +26,13 @@ interface IMethod
   public function getType(): string;
 
   /**
+   * Get payment method label
+   * example:
+   * cash, bankTransfer, creditCard
+   */
+  public function getLabel(): string;
+
+  /**
    * Calculate total purchase order
    * 
    * @param mixed $items Purchase item
