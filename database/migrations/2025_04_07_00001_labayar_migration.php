@@ -43,6 +43,7 @@ return new class extends Migration
         $table->foreign("customer_id")->references("customer_id")->on("labayar_customers");
         $table->string("store_id");
         $table->foreign("store_id")->references("store_id")->on("labayar_stores");
+        $table->date("expired_at");
         $table->integer("order_amount")->default(0);
         $table->tinyInteger("payment_status")->default(0);
         $table->softDeletes();

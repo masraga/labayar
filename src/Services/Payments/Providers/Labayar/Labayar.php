@@ -53,6 +53,13 @@ class Labayar implements IProvider
   }
 
   /**
+   * Set invoice expired time
+   * 
+   * @param mixed $time Expired time unit = minutes/hours/days, duration = int
+   */
+  public function setExpired(array $time) {}
+
+  /**
    * Set payment method for every transaction
    * 
    * @param string $method Payment method

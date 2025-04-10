@@ -18,6 +18,7 @@ class LabayarInvoice extends Model
     'customer_id',
     'store_id',
     'order_amount',
-    'payment_status'
+    'payment_status',
+    'expired_at'
   ];
 }
