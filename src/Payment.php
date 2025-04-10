@@ -39,6 +39,9 @@ class Payment
     if (!array_key_exists("items", $request)) {
       throw new Error("Error: missing parameter items");
     }
+    if (!array_key_exists("expiry", $request)) {
+      throw new Error("Error: missing parameter expiry");
+    }
     /**
      * set default storeId for lababar v1
      */
@@ -47,6 +50,7 @@ class Payment
     $transaction = $this->provider
       ->setPaymentMethod("cash", "cash")
       ->setOrderId($request["orderId"])
+      ->setExpired($request["expiry"]["duration"], $request["expiry"]["unit"])
       ->setCustomer($request["customer"])
       ->setItems($request["items"])
       ->create();

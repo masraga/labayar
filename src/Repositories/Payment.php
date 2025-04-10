@@ -32,6 +32,7 @@ class Payment
       "customer_id" => $customer["customer_id"],
       "store_id" => $customer["store_id"],
       "order_amount" => intval($payload["amount"]),
+      "expired_at" => $payload["expiredAt"]
     ]);
     $payment = LabayarInvoicePayment::create([
       "invoice_id" => $payload["orderId"],

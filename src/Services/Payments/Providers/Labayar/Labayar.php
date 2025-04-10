@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Validator;
 use Koderpedia\Labayar\Services\Payments\Providers\IProvider;
 use Koderpedia\Labayar\Services\Payments\Providers\IMethod;
 use Koderpedia\Labayar\Services\Payments\Providers\Labayar\PaymentMethod\Cash;
+use Koderpedia\Labayar\Utils\Time;
 
 class Labayar implements IProvider
 {
@@ -53,11 +54,15 @@ class Labayar implements IProvider
   }
 
   /**
-   * Set invoice expired time
+   * Transaction expiry time
    * 
-   * @param mixed $time Expired time unit = minutes/hours/days, duration = int
+   * @param int $duration Expiry time duration
+   * @param string $unit Expiry unit seconds/minutes/hours/days
    */
-  public function setExpired(array $time) {}
+  public function setExpired(int $duration, string $unit) {
+    $this->payload["expiredAt"] = Time::add($duration, $unit, false);
+    return $this;
+  }
 
   /**
    * Set payment method for every transaction

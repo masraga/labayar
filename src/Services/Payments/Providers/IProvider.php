@@ -20,11 +20,12 @@ interface IProvider
   public function setOrderId(string $id);
 
   /**
-   * Set invoice expired time
+   * Transaction expiry time
    * 
-   * @param mixed $time Expired time unit = minutes/hours/days, duration = int
+   * @param int $duration Expiry time duration
+   * @param string $unit Expiry unit seconds/minutes/hours/days
    */
-  public function setExpired(array $time);
+  public function setExpired(int $duration, string $unit);
 
   /**
    * Set payment method for every transaction
