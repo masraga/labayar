@@ -15,6 +15,8 @@ class LabayarInvoicePayment extends Model
    */
   protected $fillable = [
     'invoice_id',
+    'order_id',
+    'expired_at',
     'amount',
     'gateway',
     'payment_method',
