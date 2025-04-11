@@ -3,6 +3,7 @@
 namespace Koderpedia\Labayar\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class LabayarInvoice extends Model
 {
@@ -19,6 +20,10 @@ class LabayarInvoice extends Model
     'store_id',
     'order_amount',
     'payment_status',
-    'expired_at'
   ];
+
+  public function payment(): HasMany
+  {
+    return $this->hasMany(LabayarInvoicePayment::class, "invoice_id", "invoice_id");
+  }
 }

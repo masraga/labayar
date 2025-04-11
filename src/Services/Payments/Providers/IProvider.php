@@ -9,7 +9,7 @@ interface IProvider
    * 
    * @return string
    */
-  public function getGateway(): string;
+  public static function getGateway(): string;
 
   /**
    * Set order id for every payment method
@@ -58,4 +58,12 @@ interface IProvider
    * @return mixed
    */
   public function create(): array;
+
+  /**
+   * Pay order based on orderId
+   * 
+   * @param mixed $payload Payment payload 
+   * @return mixed
+   */
+  public function pay(array $payload): array;
 }

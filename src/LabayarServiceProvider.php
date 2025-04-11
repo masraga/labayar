@@ -10,6 +10,7 @@ class LabayarServiceProvider extends ServiceProvider
   {
     if ($this->app->runningInConsole()) {
       $this->loadMigrationsFrom(__DIR__ . "/../database/migrations");
+      $this->loadRoutesFrom(__DIR__ . "/Routes/api.php");
       $this->publishes([__DIR__ . "/../database/migrations" => database_path("migrations")], "migrations");
     }
   }

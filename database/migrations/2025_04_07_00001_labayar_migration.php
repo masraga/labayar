@@ -43,7 +43,6 @@ return new class extends Migration
         $table->foreign("customer_id")->references("customer_id")->on("labayar_customers");
         $table->string("store_id");
         $table->foreign("store_id")->references("store_id")->on("labayar_stores");
-        $table->dateTime("expired_at");
         $table->integer("order_amount")->default(0);
         $table->tinyInteger("payment_status")->default(0);
         $table->softDeletes();
@@ -66,12 +65,17 @@ return new class extends Migration
     if (!Schema::hasTable("labayar_invoice_payments")) {
       Schema::create('labayar_invoice_payments', function (Blueprint $table) {
         $table->id();
+        $table->string("order_id")->unique();
         $table->string("invoice_id");
         $table->foreign("invoice_id")->references("invoice_id")->on("labayar_invoices");
+        $table->string("store_id");
+        $table->foreign("store_id")->references("store_id")->on("labayar_stores");
         $table->integer("amount");
+        $table->integer("change")->default(0);
         $table->string("gateway");
         $table->string("payment_method");
         $table->string("payment_type");
+        $table->dateTime("expired_at");
         $table->tinyInteger("payment_status")->default(0);
         $table->softDeletes();
         $table->timestamps();

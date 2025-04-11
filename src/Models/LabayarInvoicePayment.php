@@ -3,6 +3,7 @@
 namespace Koderpedia\Labayar\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class LabayarInvoicePayment extends Model
 {
@@ -15,10 +16,19 @@ class LabayarInvoicePayment extends Model
    */
   protected $fillable = [
     'invoice_id',
+    'order_id',
+    'expired_at',
     'amount',
     'gateway',
     'payment_method',
     'payment_type',
+    'store_id',
     'payment_status',
+    'change'
   ];
+
+  public function invoice(): BelongsTo
+  {
+    return $this->belongsTo(LabayarInvoice::class, "invoice_id", "invoice_id");
+  }
 }
