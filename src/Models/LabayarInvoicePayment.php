@@ -24,7 +24,9 @@ class LabayarInvoicePayment extends Model
     'payment_type',
     'store_id',
     'payment_status',
-    'change'
+    'change',
+    'paid_date',
+    'nett_amount'
   ];
 
   public function invoice(): BelongsTo

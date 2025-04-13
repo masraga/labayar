@@ -20,3 +20,22 @@ use Koderpedia\Labayar\Payment;
 Route::post("/api/labayar/pay", function (Request $request) {
   return Payment::pay($request->all());
 });
+
+Route::get("/api/labayar/pay/{orderId}", function (Request $request, $orderId) {
+  $request = array_merge($request->all(), ["orderId" => $orderId]);
+  return Payment::UIPay($request);
+});
+
+Route::get("/api/labayar/orders", function(Request $request){
+  return Payment::UIListOrder($request->all());
+});
+
+Route::get("/api/labayar/payments/{invoiceId}", function (Request $request, $invoiceId) {
+  $request = array_merge($request->all(), ["invoiceId" => $invoiceId]);
+  return Payment::UIListPayments($request);
+});
+
+Route::get("/api/labayar/payment-status/{orderId}", function (Request $request, $orderId) {
+  $request = array_merge($request->all(), ["orderId" => $orderId]);
+  return Payment::UIPaymentStatus($request);
+});

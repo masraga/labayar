@@ -31,4 +31,13 @@ class Constants
   |
   */
   public static $paymentPaid = 1;
+  /*
+  |--------------------------------------------------------------------------
+  | Payment Type Expired
+  |--------------------------------------------------------------------------
+  |
+  | Use to payment status expired
+  |
+  */
+  public static $paymentExpired = 2;
 }

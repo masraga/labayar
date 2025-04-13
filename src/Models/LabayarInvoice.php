@@ -3,6 +3,7 @@
 namespace Koderpedia\Labayar\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class LabayarInvoice extends Model
@@ -25,5 +26,19 @@ class LabayarInvoice extends Model
   public function payment(): HasMany
   {
     return $this->hasMany(LabayarInvoicePayment::class, "invoice_id", "invoice_id");
+  }
+
+  public function item(): HasMany {
+    return $this->hasMany(LabayarInvoiceItem::class, "invoice_id", "invoice_id");
+  }
+
+  public function customer(): BelongsTo
+  {
+    return $this->belongsTo(LabayarCustomer::class, "customer_id", "customer_id");
+  }
+
+  public function store(): BelongsTo
+  {
+    return $this->belongsTo(LabayarStore::class, "store_id", "store_id");
   }
 }

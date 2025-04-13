@@ -34,7 +34,7 @@ class Payment
         "storeId" => $payload["customer"]["storeId"]
       ]);
       $invoice = LabayarInvoice::create([
-        "invoice_id" => "inv-" . time(),
+        "invoice_id" => $payload["orderId"],
         "customer_id" => $customer["customer_id"],
         "store_id" => $customer["store_id"],
         "order_amount" => intval($payload["amount"]),
@@ -44,12 +44,13 @@ class Payment
       $payment = LabayarInvoicePayment::create([
         "store_id" => $customer["store_id"],
         "invoice_id" => $invoice->invoice_id,
-        "order_id" => $payload["orderId"],
+        "order_id" => $payload["paymentId"],
         "amount" => $payAmount,
         "gateway" => $payload["gateway"],
         "payment_method" => $payload["paymentMethod"],
         "payment_type" => $payload["paymentType"],
         "expired_at" => $payload["expiredAt"],
+        "nett_amount" => intval($payload["amount"]),
         "change" => $changeAmount
       ]);
       $itemPayload = [];
@@ -124,13 +125,14 @@ class Payment
       "store_id" => $payload["storeId"],
       "order_id" => $payload["orderId"]
     ])->update([
-      "payment_status" => Constants::$paymentPaid
+      "payment_status" => Constants::$paymentPaid,
+      "paid_date" => date("Y-m-d H:i:s")
     ]);
 
     $allAmount = 0;
     $allPayment = self::getPayment(["invoiceId" => $payload["invoiceId"], "paymentStatus" => Constants::$paymentPaid]);
     foreach ($allPayment as $payment) {
-      $allAmount += intval($payment["amount"]);
+      $allAmount += intval($payment["amount"]) - intval($payment["change"]);
     }
     if ($allAmount >= $payload["orderAmount"]) {
       LabayarInvoice::where(["invoice_id" => $payload["invoiceId"]])->update([
@@ -138,5 +140,26 @@ class Payment
       ]);
     }
     return $payload;
+  }
+
+  /**
+   * Get purchase invoice
+   * 
+   * @param mixed $payload Filter query
+   * @return mixed
+   */
+  public static function getOrder(array $payload): array
+  {
+    $table = LabayarInvoice::with(["customer", "store", "item"]);
+    if (isset($payload["invoiceId"])) {
+      $table->where("invoice_id", $payload["invoiceId"]);
+    }
+    if (isset($payload["keyword"])) {
+      $table->where("invoice_id", "like", $payload["keyword"]);
+    }
+    if (isset($payload["oneRow"])) {
+      return (array) $table->get()->first()->toArray();
+    }
+    return (array) $table->get()->toArray();
   }
 }

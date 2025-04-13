@@ -8,6 +8,7 @@ use Koderpedia\Labayar\Services\Payments\Providers\Labayar\Labayar;
 use Koderpedia\Labayar\Repositories\Payment as PaymentRepo;
 use Koderpedia\Labayar\Repositories\Store;
 use Koderpedia\Labayar\Services\Payments\Providers\IManualPay;
+use Koderpedia\Labayar\Utils\Str;
 
 class Payment
 {
@@ -83,7 +84,7 @@ class Payment
     };
     $payment = PaymentRepo::getPayment(["orderId" => $orderId, "oneRow" => true]);
     $payment["expiredAt"] = $payment["expired_at"];
-    $payment["payAmount"] = $request["amount"];
+    $payment["payAmount"] = Str::toInt($request["amount"]);
     $payment["storeId"] = $payment["store_id"];
     $payment["orderId"] = $payment["order_id"];
     $payment["invoiceId"] = $payment["invoice_id"];
@@ -94,7 +95,76 @@ class Payment
     }
 
     $bill = PaymentRepo::pay($provider->pay($payment));
-
+    if(isset($request["useBuiltIn"])){
+      return redirect("/api/labayar/payment-status/".$payment["order_id"]);
+    }
     return $bill;
+  }
+
+  /**
+   * Show default order page
+   * 
+   * @param mixed $request
+   * @return view
+   */
+  public static function UIListOrder(array $request)
+  {
+    $orders = PaymentRepo::getOrder($request);
+    return view("labayar::invoice", compact("orders"));
+  }
+
+  /**
+   * API list available invoice
+   * 
+   * @param mixed $filter
+   * @return mixed
+   */
+  public static function APIListOrder(array $filter): array
+  {
+    return PaymentRepo::getOrder($filter);
+  }
+
+  /**
+   * Default payment page, show payment history and add new payment
+   * 
+   * @param mixed $request
+   * @return view
+   */
+  public static function UIListPayments(array $request)
+  {
+    $request["oneRow"] = true;
+    $order = PaymentRepo::getOrder($request);
+    $payments = PaymentRepo::getPayment(["invoiceId" => $request["invoiceId"]]);
+    return view("labayar::payment", compact("order", "payments"));
+  }
+
+  /**
+   * Show form pay invoice page, currently is not supported for this version
+   * 
+   * @param $request
+   * @return view
+   */
+  public static function UIPay(array $request)
+  {
+    $payment = PaymentRepo::getPayment([
+      "oneRow" => true,
+      "orderId" => $request["orderId"]
+    ]);
+    return view("labayar::pay", compact("payment"));
+  }
+
+  /**
+   * Show payment status page
+   * 
+   * @param $requset
+   * @return view
+   */
+  public static function UIPaymentStatus(array $request)
+  {
+    $payment = PaymentRepo::getPayment([
+      "oneRow" => true,
+      "orderId" => $request["orderId"]
+    ]);
+    return view("labayar::payment-status", compact("payment"));
   }
 }

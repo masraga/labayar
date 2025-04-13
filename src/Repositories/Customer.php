@@ -38,7 +38,7 @@ class Customer
     }
 
     $customerPayload = [
-      "customer_id" => "cust-" . time(),
+      "customer_id" => $payload["storeId"] . "-" . "cust-" . time(),
       "store_id" => $store->store_id,
       "name" => $payload["name"],
       "email" => $payload["email"],
