@@ -25,7 +25,7 @@ php artisan migrate
 php artisan serve
 ```
 ### Basic usage
-##### Creating manual transaction
+#### Creating manual transaction
 You can create invoice to your order, add this to your controller
 ```php
 namespace App\Http\Controllers;
@@ -64,7 +64,7 @@ class PaymentController extends Controller
     }
 }
 ```
-##### Pay transaction with core API
+#### Pay transaction with core API
 Pay transaction that you create before. add this to your controller
 ```php
 public function payInvoice(Request $request){
@@ -78,7 +78,7 @@ public function payInvoice(Request $request){
 ```
 Note: Get **paymentId** payload from create transaction response
 
-##### Pay transaction with built in page
+#### Pay transaction with built in page
 if you too busy to build common payment page, dont worry, labayar can handle that. redirect your laravel project to this url below.
 ```sh
 /api/labayar/orders
