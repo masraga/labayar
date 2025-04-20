@@ -79,8 +79,8 @@ class Payment
   {
     $provider = null;
     $orderId = "";
-    if (array_key_exists("orderId", $request)) {
-      $orderId = $request["orderId"];
+    if (array_key_exists("paymentId", $request)) {
+      $orderId = $request["paymentId"];
     };
     $payment = PaymentRepo::getPayment(["orderId" => $orderId, "oneRow" => true]);
     $payment["expiredAt"] = $payment["expired_at"];
