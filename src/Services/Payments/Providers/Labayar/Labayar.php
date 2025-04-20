@@ -4,11 +4,13 @@ namespace Koderpedia\Labayar\Services\Payments\Providers\Labayar;
 
 use Error;
 use Illuminate\Support\Facades\Validator;
+use Koderpedia\Labayar\Services\Payments\Providers\IManualPay;
 use Koderpedia\Labayar\Services\Payments\Providers\IProvider;
 use Koderpedia\Labayar\Services\Payments\Providers\IMethod;
 use Koderpedia\Labayar\Services\Payments\Providers\Labayar\PaymentMethod\Cash;
+use Koderpedia\Labayar\Utils\Time;
 
-class Labayar implements IProvider
+class Labayar implements IProvider, IManualPay
 {
   /**
    * Payment method
@@ -23,16 +25,16 @@ class Labayar implements IProvider
   /**
    * Payment gateway label
    */
-  private string $gateway = "labayar";
+  private static string $gateway = "labayar";
 
   /**
    * Get payment gateway label name
    * 
    * @return string
    */
-  public function getGateway(): string
+  public static function getGateway(): string
   {
-    return $this->gateway;
+    return self::$gateway;
   }
 
   /**
@@ -49,15 +51,21 @@ class Labayar implements IProvider
       "orderId.require" => "Order ID is required"
     ]);
     $this->payload["orderId"] = $id;
+    $this->payload["paymentId"] = $id."-".time();
     return $this;
   }
 
   /**
-   * Set invoice expired time
+   * Transaction expiry time
    * 
-   * @param mixed $time Expired time unit = minutes/hours/days, duration = int
+   * @param int $duration Expiry time duration
+   * @param string $unit Expiry unit seconds/minutes/hours/days
    */
-  public function setExpired(array $time) {}
+  public function setExpired(int $duration, string $unit)
+  {
+    $this->payload["expiredAt"] = Time::add($duration, $unit, false);
+    return $this;
+  }
 
   /**
    * Set payment method for every transaction
@@ -143,5 +151,30 @@ class Labayar implements IProvider
     $this->payload["gateway"] = $this->getGateway();
 
     return $this->payload;
+  }
+
+  /**
+   * Pay order based on orderId
+   * 
+   * @param mixed $payload Payment payload 
+   * @return mixed
+   */
+  public function pay(array $payload): array
+  {
+    return $payload;
+  }
+
+  /**
+   * Set payment fee for invoice
+   * 
+   * @param int $amount Amount fee for the transaction
+   */
+  public function setPayAmount(int $amount)
+  {
+    if ($amount < 10000) {
+      throw new Error("Min purchase order is Rp10000");
+    }
+    $this->payload["payAmount"] = $amount;
+    return $this;
   }
 }

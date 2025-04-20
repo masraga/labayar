@@ -9,7 +9,7 @@ interface IProvider
    * 
    * @return string
    */
-  public function getGateway(): string;
+  public static function getGateway(): string;
 
   /**
    * Set order id for every payment method
@@ -20,11 +20,12 @@ interface IProvider
   public function setOrderId(string $id);
 
   /**
-   * Set invoice expired time
+   * Transaction expiry time
    * 
-   * @param mixed $time Expired time unit = minutes/hours/days, duration = int
+   * @param int $duration Expiry time duration
+   * @param string $unit Expiry unit seconds/minutes/hours/days
    */
-  public function setExpired(array $time);
+  public function setExpired(int $duration, string $unit);
 
   /**
    * Set payment method for every transaction
@@ -57,4 +58,12 @@ interface IProvider
    * @return mixed
    */
   public function create(): array;
+
+  /**
+   * Pay order based on orderId
+   * 
+   * @param mixed $payload Payment payload 
+   * @return mixed
+   */
+  public function pay(array $payload): array;
 }
