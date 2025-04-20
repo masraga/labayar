@@ -157,9 +157,74 @@ class Payment
     if (isset($payload["keyword"])) {
       $table->where("invoice_id", "like", $payload["keyword"]);
     }
+    if(isset($payload["createdAtRange"])){
+      if(is_array($payload["createdAtRange"])){
+        $table->whereBetween('created_at', [$payload["createdAtRange"]["dateStart"], $payload["createdAtRange"]["dateEnd"]]);
+      }
+    }
     if (isset($payload["oneRow"])) {
       return (array) $table->get()->first()->toArray();
     }
     return (array) $table->get()->toArray();
+  }
+
+  /**
+   * Get sales report weekly, monthly, yearly. default report is weekly
+   * 
+   * @param mixed $filter Query filter
+   * @return mixed
+   */
+  public static function getSalesReport(array $filter = []): array{
+    $reportType = "weekly";
+    $dateStart = Carbon::now()->subWeek();
+    $validType = ["weekly", "monthly","yearly"];
+    $labels = [];
+    if(isset($filter["reportType"])){
+      if(in_array($filter["reportType"], $validType)){
+        $reportType = $filter["reportType"];
+      }
+    }
+    if($reportType == "weekly"){
+      $dateStart = Carbon::now()->subWeek();
+    } elseif ($reportType == "monthly") {
+      $dateStart = Carbon::now()->subMonth();
+    } elseif ($reportType == "yearly") {
+      $dateStart = Carbon::now()->subYear();
+    }
+
+    $orders = self::getOrder([
+      "createdAtRange" => [
+        "dateStart" => $dateStart->toDateTimeString(),
+        "dateEnd" => Carbon::now()->toDateTimeString()
+      ]
+    ]);
+
+    if(in_array($reportType, ["weekly", "monthly"])){
+      while ($dateStart->isBefore(Carbon::now())) {
+        $labels[$dateStart->toDateString()] = ["paid" => 0, "unpaid" => 0];
+        $dateStart->addDays(1);
+      }
+    }
+
+    foreach($orders as $order){
+      $createdAt = date("Y-m-d", strtotime($order["created_at"]));
+      if($order["payment_status"] == Constants::$paymentPaid){
+        $labels[$createdAt]["paid"] += $order['order_amount'];
+      }
+      elseif($order["payment_status"] == Constants::$paymentUnpaid) {
+        $labels[$createdAt]["unpaid"] += $order['order_amount'];
+      }
+    }
+    $result = [
+      "labels" => [],
+      "paid" => [],
+      "unpaid" => []
+    ];
+    foreach($labels as $date => $value) {
+      $result["labels"][] = $date;
+      $result["paid"][] = $labels[$date]["paid"];
+      $result["unpaid"][] = $labels[$date]["unpaid"];
+    }
+    return $result;
   }
 }

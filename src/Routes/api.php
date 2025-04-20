@@ -30,6 +30,10 @@ Route::get("/api/labayar/orders", function(Request $request){
   return Payment::UIListOrder($request->all());
 });
 
+Route::get("/api/labayar/payments/graph", function (Request $request) {
+  return Payment::UISalesGraph($request->all());
+});
+
 Route::get("/api/labayar/payments/{invoiceId}", function (Request $request, $invoiceId) {
   $request = array_merge($request->all(), ["invoiceId" => $invoiceId]);
   return Payment::UIListPayments($request);

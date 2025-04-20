@@ -141,7 +141,7 @@ class Payment
   /**
    * Show form pay invoice page, currently is not supported for this version
    * 
-   * @param $request
+   * @param mixed $request
    * @return view
    */
   public static function UIPay(array $request)
@@ -156,7 +156,7 @@ class Payment
   /**
    * Show payment status page
    * 
-   * @param $requset
+   * @param mixed $requset
    * @return view
    */
   public static function UIPaymentStatus(array $request)
@@ -166,5 +166,25 @@ class Payment
       "orderId" => $request["orderId"]
     ]);
     return view("labayar::payment-status", compact("payment"));
+  }
+
+  /**
+   * Show sales diagram
+   * 
+   * @param mixed $request
+   */
+  public static function UISalesGraph(array $request){
+    $graph = json_encode(PaymentRepo::getSalesReport(["reportType" => "monthly"]));
+    return view("labayar::payment-graph", ["graph" => $graph]);
+  }
+
+  /**
+   * API sales report diagram
+   * 
+   * @param mixed $request
+   * @return mixed
+   */
+  public static function APISalesGraph(array $request){
+    return PaymentRepo::getSalesReport($request);
   }
 }
