@@ -26,7 +26,7 @@ php artisan serve
 ```
 ### Basic usage
 #### Creating manual transaction
-You can create invoice to your order, add this to your controller
+You can create invoice to your order, add this to your controller. fill all value variable **$payload** with yours
 ```php
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
