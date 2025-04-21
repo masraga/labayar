@@ -1,7 +1,8 @@
 # Labayar
 Labayar is a CRM library to handling many case in CRM app, such as make a payment, check order status, and other. With labayar you have no worry with payment logic, since labayar solve all your payment problem. Labayar is usefull if your build POS and Ecommerce application.
 ### Requirements
-- Laravel (labayar only support in laravel for now)
+- PHP 8
+- Laravel 8 or above (labayar only support in laravel for now)
 - Composer
 - MySql
 ### Installations
