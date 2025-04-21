@@ -1,10 +1,10 @@
 # Labayar
 Labayar is a CRM library to handling many case in CRM app, such as make a payment, check order status, and other. With labayar you have no worry with payment logic, since labayar solve all your payment problem. Labayar is usefull if your build POS and Ecommerce application.
-##### Requirements
+### Requirements
 - Laravel (labayar only support in laravel for now)
 - Composer
 - MySql
-##### Installations
+### Installations
 1. Create laravel project you can check from [laravel official page](https://laravel.com/docs/12.x/installation).
 2. Open laravel in your favorite text editor, prefer use vscode.
 3. Ensure [composer](https://getcomposer.org/) is installed in your machine.
@@ -24,8 +24,8 @@ php artisan migrate
 ```sh
 php artisan serve
 ```
-##### Basic usage
-**Creating manual transaction**
+### Basic usage
+#### Creating manual transaction
 You can create invoice to your order, add this to your controller
 ```php
 namespace App\Http\Controllers;
@@ -60,11 +60,11 @@ class PaymentController extends Controller
             "payAmount" => 90000,
         ];
         $transaction = $labayar->createInvoice($payload);
-        return response()->json($transaction);
+        return redirect("/api/labayar/orders");
     }
 }
 ```
-**Pay transaction with core API**
+#### Pay transaction with core API
 Pay transaction that you create before. add this to your controller
 ```php
 public function payInvoice(Request $request){
@@ -78,7 +78,7 @@ public function payInvoice(Request $request){
 ```
 Note: Get **paymentId** payload from create transaction response
 
-**Pay transaction with built in page**
+#### Pay transaction with built in page
 if you too busy to build common payment page, dont worry, labayar can handle that. redirect your laravel project to this url below.
 ```sh
 /api/labayar/orders
