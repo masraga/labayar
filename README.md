@@ -60,7 +60,7 @@ class PaymentController extends Controller
             "payAmount" => 90000,
         ];
         $transaction = $labayar->createInvoice($payload);
-        return response()->json($transaction);
+        return redirect("/api/labayar/orders");
     }
 }
 ```
