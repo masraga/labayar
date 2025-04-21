@@ -6,7 +6,7 @@
         "php": "^8",
         "laravel/framework": ">=8",
         "illuminate/support": ">=8",
-        "nesbot/carbon": "^3.0@dev"
+        "nesbot/carbon": ">=2.62.1"
     },
     "license": "MIT",
     "autoload": {
@@ -27,6 +27,6 @@
             ]
         }
     },
-    "version": "1.0.0-dev",
-    "minimum-stability": "dev"
+    "version": "1.0.0",
+    "minimum-stability": "stable"
 }
