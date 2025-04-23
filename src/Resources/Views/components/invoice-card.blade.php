@@ -1,3 +1,18 @@
+@php
+$adminFee=0;
+$subTotalFee=0;
+@endphp
+@foreach($order["metadata"] as $metadata)
+@if($metadata["key"] == \Koderpedia\Labayar\Utils\Constants::$subTotal)
+@php
+$subTotalFee = \Koderpedia\Labayar\Utils\Str::toCurrency($metadata['value'])
+@endphp
+@elseif($metadata["key"] == \Koderpedia\Labayar\Utils\Constants::$adminFee)
+@php
+$adminFee = \Koderpedia\Labayar\Utils\Str::toCurrency($metadata['value'])
+@endphp
+@endif
+@endforeach
 <a href="/api/labayar/payments/{{$order['invoice_id']}}">
   <div class="card bg-white rounded py-2 shadow">
     <div class="px-4 pt-2">
@@ -32,6 +47,7 @@
     <div class="border-b border-gray-200 my-4"></div>
     <div class="item max-h-[150px] min-h-[150px] overflow-y-auto">
       @foreach($order["item"] as $item)
+      @if($item["type"] == \Koderpedia\Labayar\Utils\Constants::$sellItem)
       <div class="flex px-4 mb-3">
         <div class="w-[50%]">
           <div class="text-gray-500">{{$item["name"]}}</div>
@@ -39,13 +55,18 @@
         <div class="w-[20%] text-right text-gray-500">qty {{$item["quantity"]}}</div>
         <div class="w-[30%] text-right font-bold">{{\Koderpedia\Labayar\Utils\Str::toCurrency($item["price"])}}</div>
       </div>
+      @endif
       @endforeach
     </div>
     <div class="border-b border-gray-200 my-4"></div>
     <div class="px-4">
       <div class="flex justify-between mb-2">
         <div class="text-base text-gray-400">Subtotal</div>
-        <div class="font-bold">{{\Koderpedia\Labayar\Utils\Str::toCurrency($order["order_amount"])}}</div>
+        <div class="font-bold">{{$subTotalFee}}</div>
+      </div>
+      <div class="flex justify-between mb-2">
+        <div class="text-base text-gray-400">Admin Fee</div>
+        <div class="font-bold">{{$adminFee}}</div>
       </div>
       <div class="flex justify-between mb-2">
         <div class="text-base text-gray-400">Discount</div>

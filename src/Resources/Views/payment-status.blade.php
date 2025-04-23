@@ -1,5 +1,26 @@
 @extends("labayar::template")
-
+@php
+$isPaymentGateway=false;
+$merchantName="";
+$merchantCode="";
+@endphp
+@foreach($payment["metadata"] as $metadata)
+@if($metadata["key"] == \Koderpedia\Labayar\Utils\Constants::$isPaymentGateway)
+@php
+$isPaymentGateway = true;
+@endphp
+@endif
+@if($metadata["key"] == \Koderpedia\Labayar\Utils\Constants::$gatewayMerchantName)
+@php
+$merchantName = $metadata['value'];
+@endphp
+@endif
+@if($metadata["key"] == \Koderpedia\Labayar\Utils\Constants::$gatewayMerchantCode)
+@php
+$merchantCode = $metadata['value'];
+@endphp
+@endif
+@endforeach
 <div class="h-screen flex justify-center items-center">
   <div class="w-[400px]">
     <div class="bg-white rounded shadow px-3 py-6 mt-3">
@@ -26,10 +47,10 @@
           <div class="font-medium text-gray-700">{{$payment["order_id"]}}</div>
         </div>
         @if($payment['paid_date'])
-          <div class="flex justify-between mb-3">
-            <div class="text-gray-500 text-sm mt-[3px]">Paid date</div>
-            <div class="font-medium text-gray-700">{{date("d-m-Y H:i:s", strtotime($payment["paid_date"]))}}</div>
-          </div>
+        <div class="flex justify-between mb-3">
+          <div class="text-gray-500 text-sm mt-[3px]">Paid date</div>
+          <div class="font-medium text-gray-700">{{date("d-m-Y H:i:s", strtotime($payment["paid_date"]))}}</div>
+        </div>
         @endif
         <div class="flex justify-between mb-3">
           <div class="text-gray-500 text-sm mt-[3px]">Amount</div>
@@ -47,10 +68,20 @@
           <div class="text-gray-500 text-sm mt-[3px]">Method</div>
           <div class="font-medium text-gray-700">{{ucfirst($payment["payment_method"])}} - {{ucfirst($payment["payment_type"])}}</div>
         </div>
-        <div class="flex justify-between">
+        <div class="flex justify-between mb-3">
           <div class="text-gray-500 text-sm mt-[3px]">Gateway</div>
           <div class="font-medium text-gray-700">{{ucfirst($payment["gateway"])}}</div>
         </div>
+        @if($isPaymentGateway)
+        <div class="flex justify-between mb-3">
+          <div class="text-gray-500 text-sm mt-[3px]">Merchant</div>
+          <div class="font-medium text-gray-700">{{ucfirst($merchantName)}}</div>
+        </div>
+        <div class="flex justify-between">
+          <div class="text-gray-500 text-sm mt-[3px]">Pay Code</div>
+          <div class="font-medium text-gray-700">{{ucfirst($merchantCode)}}</div>
+        </div>
+        @endif
       </div>
     </div>
   </div>
