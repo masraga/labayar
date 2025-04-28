@@ -20,6 +20,8 @@ class LabayarSeeder extends Seeder
         "owner_name" => config("labayar.store_owner"),
         "address" => config("labayar.store_address"),
         "logo" => config("labayar.store_logo"),
+        "phone" => config("labayar.store_phone"),
+        "email" => config("labayar.store_email"),
       ]);
     } else {
       DB::table("labayar_stores")->insert([
@@ -28,6 +30,8 @@ class LabayarSeeder extends Seeder
         "owner_name" => config("labayar.store_owner"),
         "address" => config("labayar.store_address"),
         "logo" => config("labayar.store_logo"),
+        "phone" => config("labayar.store_phone"),
+        "email" => config("labayar.store_email"),
       ]);
     }
   }
