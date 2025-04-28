@@ -16,11 +16,21 @@ return new class extends Migration
     if (Schema::hasTable("labayar_invoice_items")) {
       Schema::table('labayar_invoice_items', function (Blueprint $table) {
         $table->string("type")->default(Constants::$sellItem);
+        $table->integer("gross_total")->default(0);
       });
     }
     if (Schema::hasTable("labayar_invoice_payments")) {
       Schema::table('labayar_invoice_payments', function (Blueprint $table) {
         $table->boolean("is_manual_pay")->default(true);
+      });
+    }
+    if (Schema::hasTable("labayar_stores")) {
+      Schema::table('labayar_stores', function (Blueprint $table) {
+        $table->string("owner_name")->default(Constants::$appName);
+        $table->string("address")->nullable();
+        $table->string("logo")->nullable();
+        $table->string("phone")->nullable();
+        $table->string("email")->nullable();
       });
     }
   }
@@ -38,6 +48,15 @@ return new class extends Migration
     if (Schema::hasTable("labayar_invoice_payments")) {
       Schema::table('labayar_invoice_payments', function (Blueprint $table) {
         $table->dropColumn('is_manual_pay');
+      });
+    }
+    if (Schema::hasTable("labayar_stores")) {
+      Schema::table('labayar_stores', function (Blueprint $table) {
+        $table->dropColumn("owner_name");
+        $table->dropColumn("address");
+        $table->dropColumn("logo");
+        $table->dropColumn("phone");
+        $table->dropColumn("email");
       });
     }
   }
