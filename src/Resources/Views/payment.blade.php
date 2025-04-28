@@ -50,11 +50,12 @@
                 @include("labayar::components.icons.menu")
               </label>
               <input type="checkbox" name="dropdown" id="dropdown-{{$i}}" class="peer hidden">
-              <div class="p-2 text-left peer-checked:block hidden rounded bg-white shadow absolute w-[100px]">
+              <div class="p-2 text-left peer-checked:block hidden rounded bg-white shadow absolute w-[150px]">
                 @if($payment["payment_status"] == \Koderpedia\Labayar\Utils\Constants::$paymentUnpaid)
                 <div class="mb-2 hover:font-medium"><a href="/api/labayar/pay/{{$payment['order_id']}}" target="_blank">Pay</a></div>
                 @endif
-                <div class="mb-2 hover:font-medium"><a href="/api/labayar/payment-status/{{$payment['order_id']}}" target="_blank">Detail</a></div>
+                <div class="mb-2 hover:font-medium"><a href=" /api/labayar/payment-status/{{$payment['order_id']}}" target="_blank">Detail</a></div>
+                <div class="mb-2 hover:font-medium"><a href="/api/labayar/payment/download/{{$payment['invoice_id']}}" target="_blank">Download Invoice</a></div>
               </div>
             </td>
           </tr>

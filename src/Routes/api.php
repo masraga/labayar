@@ -2,6 +2,7 @@
 
 namespace Koderpedia\Labayar\Routes;
 
+use Dompdf\Dompdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Koderpedia\Labayar\Payment;
@@ -51,4 +52,9 @@ Route::post("/api/labayar/snap", function (Request $request) {
 
 Route::post("/api/labayar/gateway/notification", function (Request $request) {
   return Payment::gatewayNotif($request->all());
+});
+
+Route::get("/api/labayar/payment/download/{invoiceId}", function (Request $request, $invoiceId) {
+  $payload = array_merge($request->all(), ["invoiceId" => $invoiceId]);
+  return Payment::downloadInvoice($payload);
 });

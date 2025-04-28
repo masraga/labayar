@@ -69,6 +69,7 @@ class Payment
           "name" => $item["name"],
           "quantity" => intval($item["quantity"]),
           "price" => intval($item["price"]),
+          "gross_total" => intval($item["quantity"]) * intval($item["price"]),
           "type" => $type
         ];
 

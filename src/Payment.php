@@ -3,6 +3,8 @@
 namespace Koderpedia\Labayar;
 
 use Error;
+use Koderpedia\Labayar\Libraries\PDF;
+use Koderpedia\Labayar\Models\LabayarStore;
 use Koderpedia\Labayar\Services\Payments\Providers\IProvider;
 use Koderpedia\Labayar\Services\Payments\Providers\Labayar\Labayar;
 use Koderpedia\Labayar\Repositories\Payment as PaymentRepo;
@@ -362,5 +364,23 @@ class Payment
       ]);
     }
     return false;
+  }
+
+  /**
+   * Download selected invoice to pdf
+   * 
+   * @param mixed $request
+   * @return
+   */
+  public static function downloadInvoice(array $request)
+  {
+    $order = PaymentRepo::getOrder(["invoiceId" => $request["invoiceId"], "oneRow" => true]);
+    $store = LabayarStore::first();
+    $filename = $order["invoice_id"] . "-" . date("d-m-Y H:i:s") . ".pdf";
+    $html = view("labayar::download-invoice", compact("order", "store", 'filename'))->render();
+    $pdf = new PDF();
+    $pdf->loadHtml($html);
+    $pdf->render();
+    return $pdf->stream($filename);
   }
 }
