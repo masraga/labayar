@@ -54,7 +54,8 @@
                 @if($payment["payment_status"] == \Koderpedia\Labayar\Utils\Constants::$paymentUnpaid)
                 <div class="mb-2 hover:font-medium"><a href="/api/labayar/pay/{{$payment['order_id']}}" target="_blank">Pay</a></div>
                 @endif
-                <div class="mb-2 hover:font-medium"><a href="/api/labayar/payment-status/{{$payment['order_id']}}" target="_blank">Detail</a></div>
+                <div class="mb-2 hover:font-medium"><a href=" /api/labayar/payment-status/{{$payment['order_id']}}" target="_blank">Detail</a></div>
+                <div class="mb-2 hover:font-medium"><a href="/api/labayar/payment-status/{{$payment['order_id']}}" target="_blank">Download Invoice</a></div>
               </div>
             </td>
           </tr>
