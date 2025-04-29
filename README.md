@@ -25,6 +25,10 @@ Labayar is a CRM library to handling many case in CRM app, such as make a paymen
 - Composer
 - MySql
 
+### Quick Start
+
+[Labayar quick start](https://github.com/masraga/labayar-starter-kit)
+
 ### Installations
 
 1. Create laravel project you can check from [laravel official page](https://laravel.com/docs/12.x/installation).
