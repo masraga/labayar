@@ -2,7 +2,7 @@
 
 namespace Koderpedia\Labayar\Libraries;
 
-require __DIR__ . "../../../vendor/autoload.php";
+require __DIR__ . "/../../../vendor/autoload.php";
 
 use Dompdf\Dompdf;
 
