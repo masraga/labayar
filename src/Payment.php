@@ -3,6 +3,7 @@
 namespace Koderpedia\Labayar;
 
 use Error;
+use Koderpedia\Labayar\Libraries\PDF;
 use Koderpedia\Labayar\Models\LabayarStore;
 use Koderpedia\Labayar\Services\Payments\Providers\IProvider;
 use Koderpedia\Labayar\Services\Payments\Providers\Labayar\Labayar;
@@ -375,6 +376,11 @@ class Payment
   {
     $order = PaymentRepo::getOrder(["invoiceId" => $request["invoiceId"], "oneRow" => true]);
     $store = LabayarStore::first();
-    return view("labayar::download-invoice", compact("order", "store"));
+    $filename = $order["invoice_id"] . "-" . date("d-m-Y H:i:s") . ".pdf";
+    $html = view("labayar::download-invoice", compact("order", "store", 'filename'))->render();
+    $pdf = new PDF();
+    $pdf->loadHtml($html);
+    $pdf->render();
+    return $pdf->stream($filename);
   }
 }

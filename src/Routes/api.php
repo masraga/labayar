@@ -2,6 +2,7 @@
 
 namespace Koderpedia\Labayar\Routes;
 
+use Dompdf\Dompdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Koderpedia\Labayar\Payment;

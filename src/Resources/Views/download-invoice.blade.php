@@ -2,7 +2,8 @@
 $adminFee = 0;
 $paymentMethod = "Cash";
 $paymentType = "Cash";
-$paymentCode = ""
+$paymentCode = "";
+$paymentStatus = "Unpaid";
 @endphp
 @foreach($order["metadata"] as $meta)
 @if($meta['key'] == \Koderpedia\Labayar\Utils\Constants::$adminFee)
@@ -18,207 +19,200 @@ $paymentCode = ""
 @php $paymentCode = $meta['value']; @endphp
 @endif
 @endforeach
+@if($order['payment_status'] == \Koderpedia\Labayar\Utils\Constants::$paymentPaid)
+@php $paymentStatus = "Paid"; @endphp
+@endif
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>{{$filename}}</title>
+  <style>
+    html {
+      padding: 0;
+      margin: 0;
+    }
+
+    body {
+      margin: 20px;
+    }
+
+    .brand-name {
+      font-size: 2rem;
+      font-weight: bold;
+    }
+
+    .text-lg {
+      font-size: 1.2rem;
+    }
+
+    .text-left {
+      text-align: left;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .mb-3 {
+      margin-bottom: .3rem;
+    }
+
+    .pb-5 {
+      padding-bottom: .5rem;
+    }
+
+    .table-item {
+      margin-top: 30px;
+    }
+
+    .table-item>thead th,
+    .table-item>tbody td {
+      padding: 5px 0;
+      padding-right: 5px;
+    }
+
+    .summary-table {
+      margin-top: 30px;
+    }
+  </style>
 </head>
 
-<style>
-  html {
-    padding: 0;
-    margin: 0;
-  }
-
-  body {
-    padding: 20px;
-  }
-
-  .store-info {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .logo-image {
-    width: 70px;
-  }
-
-  .brand-name {
-    font-size: 2.2rem;
-    font-weight: bold;
-  }
-
-  .brand {
-    display: flex;
-  }
-
-  .brand-name {
-    margin-top: 10px;
-    margin-left: 15px;
-  }
-
-  .text-lg {
-    font-size: 1.2rem;
-  }
-
-  .text-right {
-    text-align: right;
-  }
-
-  .text-left {
-    text-align: left;
-  }
-
-  .mb-3 {
-    margin-bottom: 5px;
-  }
-
-  .pb-5 {
-    padding-bottom: 10px;
-  }
-
-  .pr-3 {
-    padding-right: 10px;
-  }
-
-  .text-center {
-    text-align: center;
-  }
-
-  .invoice {
-    margin-top: 50px;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .invoice-detail>tbody>tr>th {
-    text-align: left;
-  }
-
-  .table-items {
-    margin-top: 20px;
-  }
-
-  .invoice-item>thead th,
-  .invoice-item>tbody td {
-    padding: 5px;
-  }
-
-  .invoice-summary {
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
-  }
-</style>
-
 <body>
-  <div class="store-info">
-    <div class="brand">
-      <div><img src="{{$store['logo']}}" alt="logo" class="logo-image"></div>
-      <div class="brand-name">{{$store['name']}}</div>
-    </div>
-    <div class="address">
-      <div class="text-lg mb-3 full-address">{{$store['address']}}</div>
-      <div class="text-lg mb-3 phone">{{$store['phone']}}</div>
-      <div class="text-lg mb-3 email">{{$store['email']}}</div>
-    </div>
-  </div>
-  <hr>
-  <div class="invoice">
-    <div class="customer">
-      <div class="text-lg mb-3"><b>Customer</b></div>
-      <div class="text-lg mb-3 full-address">{{$order['customer']['name']}}</div>
-      <div class="text-lg mb-3 phone">{{$order['customer']['phone']}}</div>
-      <div class="text-lg mb-3 email">{{$order['customer']['email']}}</div>
-    </div>
-    <div class="invoice-info">
-      <table class="invoice-detail">
-        <tbody>
+  <table width="100%">
+    <tr>
+      <td valign="top">
+        <div class="brand-name">{{$store['name']}}</div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class="text-lg full-address">{{$store['address']}}</div>
+      </td>
+      <td class="text-lg text-right">
+        <table width="100%">
           <tr>
-            <th class="text-lg">No. invoice</th>
-            <td class="text-lg">: {{$order['invoice_id']}}</td>
+            <td class="text-lg text-right" style="width: 40%;"><b>Order Id</b></td>
+            <td class="text-lg text-right" style="width: 50%;">{{$order["invoice_id"]}}</td>
           </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class="text-lg mb-3 phone">{{$store['phone']}}</div>
+      </td>
+      <td class="text-lg text-right">
+        <table width="100%">
           <tr>
-            <th class="text-lg">Inv. date</th>
-            <td class="text-lg">: {{date('d-m-Y H:i:s', strtotime($order['created_at']))}}</td>
+            <td class="text-lg text-right" style="width: 40%;"><b>Inv. date</b></td>
+            <td class="text-lg text-right" style="width: 50%;">{{date('d-m-Y H:i:s', strtotime($order["created_at"]))}}</td>
           </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div class="text-lg mb-3 email">{{$store['email']}}</div>
+      </td>
+      <td class="text-lg">
+        <table width="100%">
           <tr>
-            <th class="text-lg">Inv. status</th>
-            <td class="text-lg">:
-              @if($order['payment_status'] == \Koderpedia\Labayar\Utils\Constants::$paymentUnpaid)
-              Unpaid
-              @else
-              Paid
-              @endif
-            </td>
+            <td class="text-lg text-right" style="width: 40%;"><b>Status</b></td>
+            <td class="text-lg text-right" style="width: 50%;">{{$paymentStatus}}</td>
           </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <table style="margin-top: 40px;">
+    <tr>
+      <td class="text-lg"><b>Customer</b></td>
+    </tr>
+    <tr>
+      <td class="text-lg">{{$order['customer']['name']}}</td>
+    </tr>
+    <tr>
+      <td class="text-lg">{{$order['customer']['email']}}</td>
+    </tr>
+    <tr>
+      <td class="text-lg">{{$order['customer']['phone']}}</td>
+    </tr>
+  </table>
 
-  <div class="table-items">
-    <table cellpadding=="0" cellspacing="0" class="invoice-item" width="100%" border="1">
-      <thead>
-        <th class="text-lg">No</th>
-        <th class="text-lg">Items</th>
-        <th class="text-lg">Qty</th>
-        <th class="text-lg">Price</th>
-        <th class="text-lg text-right">Total</th>
-      </thead>
-      <tbody>
-        @php $i = 0; $grossTotal = 0 @endphp
-        @foreach($order["item"] as $item)
-        @php $i++ @endphp
-        @if($item['type'] == \Koderpedia\Labayar\Utils\Constants::$adminFee)
-        @php continue; @endphp
-        @endif
-        @php $grossTotal+= $item["gross_total"] @endphp
-        <tr>
-          <td class="text-center text-lg">{{$i}}</td>
-          <td class="text-center text-lg">{{$item['name']}}</td>
-          <td class="text-center text-lg">{{$item['quantity']}}</td>
-          <td class="text-center text-lg">{{\Koderpedia\Labayar\Utils\Str::toCurrency($item['price'])}}</td>
-          <td class="text-right text-lg">{{\Koderpedia\Labayar\Utils\Str::toCurrency($item['gross_total'])}}</td>
-        </tr>
-        @endforeach
-      </tbody>
-    </table>
-  </div>
-
-  <div class="invoice-summary">
-    <div class="transfer">
-      <div class="text-lg mb-3"><b>TRANSFER VIA</b></div>
-      <div class="text-lg mb-3">{{$paymentMethod}} - {{$paymentType}}</div>
-      <div class="text-lg mb-3">{{$paymentCode}}</div>
-    </div>
-    <div class="owner">
-      <div class="text-lg text-center">Owner</div>
-      <br>
-      <br>
-      <br>
-      <div class="text-lg text-center"><b>{{$store["owner_name"]}}</b></div>
-    </div>
-    <div class="fee">
-      <table>
-        <tr>
-          <th class="text-left pb-5 pr-3 text-lg">Gross total</th>
-          <td class="text-right text-lg pb-5">{{\Koderpedia\Labayar\Utils\Str::toCurrency($grossTotal)}}</td>
-        </tr>
-        <tr>
-          <th class="text-left pb-5 pr-3 text-lg">Admin Fee</th>
-          <td class="text-right text-lg pb-5">{{\Koderpedia\Labayar\Utils\Str::toCurrency($adminFee)}}</td>
-        </tr>
-        <tr>
-          <th class="text-left pb-5 pr-3 text-lg">Nett</th>
-          <td class="text-right text-lg pb-5">{{\Koderpedia\Labayar\Utils\Str::toCurrency($order["order_amount"])}}</td>
-        </tr>
-      </table>
-    </div>
-  </div>
+  <table class="table-item" width="100%" cellpadding="0" cellspacing="0" border="1">
+    <thead>
+      <th class="text-lg">No</th>
+      <th class="text-lg">Items</th>
+      <th class="text-lg">Qty</th>
+      <th class="text-lg">Price</th>
+      <th class="text-lg text-right">Gross Total</th>
+    </thead>
+    <tbody>
+      @php $i=0; $grossTotal = 0; @endphp
+      @foreach($order['item'] as $item)
+      @if($item["type"] == \Koderpedia\Labayar\Utils\Constants::$sellItem)
+      @php $i++; $grossTotal += $item['gross_total'] @endphp
+      <tr>
+        <td class="text-lg text-center">{{$i}}</td>
+        <td class="text-lg text-center">{{$item['name']}}</td>
+        <td class="text-lg text-center">{{$item['quantity']}}</td>
+        <td class="text-lg text-center">{{\Koderpedia\Labayar\Utils\Str::toCurrency($item['price'])}}</td>
+        <td class="text-lg text-right">{{\Koderpedia\Labayar\Utils\Str::toCurrency($item['gross_total'])}}</td>
+      </tr>
+      @endif
+      @endforeach
+    </tbody>
+  </table>
+  <table class="summary-table" width="100%">
+    <tr>
+      <td><b class="text-lg">Transfer VIA</b></td>
+      <td>
+        <table width="100%">
+          <tr>
+            <td class="text-lg text-right" style="width: 60%;"><b>Gross Total</b></td>
+            <td class="text-lg text-right">{{\Koderpedia\Labayar\Utils\Str::toCurrency($grossTotal)}}</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td><b class="text-lg">{{$paymentMethod}} - {{$paymentType}}</b></td>
+      <td>
+        <table width="100%">
+          <tr>
+            <td class="text-lg text-right" style="width: 60%;"><b>Admin Total</b></td>
+            <td class="text-lg text-right">{{\Koderpedia\Labayar\Utils\Str::toCurrency($adminFee)}}</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td class="text-lg">{{$paymentCode}}</td>
+      <td>
+        <table width="100%">
+          <tr>
+            <td class="text-lg text-right" style="width: 60%;"><b>Nett Total</b></td>
+            <td class="text-lg text-right">{{\Koderpedia\Labayar\Utils\Str::toCurrency($order["order_amount"])}}</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+  <table width="100%" style="margin-top: 20px;">
+    <tr>
+      <td class="text-lg text-center" style="padding-bottom: 50px;">Owner</td>
+    </tr>
+    <tr>
+      <td class="text-lg text-center"><b>{{$store['owner_name']}}</b></td>
+    </tr>
+  </table>
 </body>
 
 </html>
