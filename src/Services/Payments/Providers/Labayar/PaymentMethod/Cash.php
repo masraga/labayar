@@ -3,8 +3,10 @@
 namespace Koderpedia\Labayar\Services\Payments\Providers\Labayar\PaymentMethod;
 
 use Error;
+use Koderpedia\Labayar\Libraries\PaymentSelector;
 use Koderpedia\Labayar\Services\Payments\Providers\IMethod;
 use Koderpedia\Labayar\Services\Payments\Traits\PaymentCalculator;
+use Koderpedia\Labayar\Utils\Constants;
 
 class Cash implements IMethod
 {
@@ -79,7 +81,62 @@ class Cash implements IMethod
    * 
    * @return mixed
    */
-  public function createTransaction(): array
+  public function createTransaction(array $payload): array
+  {
+    return [];
+  }
+
+  /**
+   * Load supported payment type of payment gateway
+   * 
+   * @return mixed
+   */
+  public function loadSupportedPayment(): array
+  {
+    return [
+      "method" => Constants::$cash,
+      "types" => [
+        PaymentSelector::cash()
+      ],
+    ];
+  }
+
+  /**
+   * Get tax of payment method
+   * 
+   * @param string $method Payment method
+   * @param string $type Payment type
+   * @return mixed
+   */
+  public function getTax(string $method, string $type): array
+  {
+    $supportPayment = $this->loadSupportedPayment();
+    $selectedMethod = [];
+    $taxes = [];
+    foreach ($supportPayment as $payment) {
+      if ($payment["method"] == $method) {
+        $selectedMethod = $payment;
+        break;
+      }
+    }
+    foreach ($selectedMethod["types"] as $paymentType) {
+      if ($paymentType == $type) {
+        $taxes = $paymentType;
+      }
+    }
+    return [
+      "taxFix" => $taxes["taxFix"],
+      "taxPercent" => $taxes["taxPercent"],
+    ];
+  }
+
+  /**
+   * Get payment status from payment gateway
+   * 
+   * @param string $paymentId Payment id from database
+   * @return mixed
+   */
+  public function getPaymentStatus(string $paymentId): array
   {
     return [];
   }

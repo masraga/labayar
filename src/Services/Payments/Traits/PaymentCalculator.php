@@ -7,7 +7,7 @@ trait PaymentCalculator
   /**
    * Product item to calculate
    */
-  private array $items;
+  public array $items;
 
   /**
    * Set purchase item to calculation logic
@@ -22,6 +22,8 @@ trait PaymentCalculator
 
   /**
    * Calculate subtotal payment
+   * 
+   * @return mixed
    */
   public function calculate(): array
   {

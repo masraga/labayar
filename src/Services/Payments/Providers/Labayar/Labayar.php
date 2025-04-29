@@ -51,7 +51,7 @@ class Labayar implements IProvider, IManualPay
       "orderId.require" => "Order ID is required"
     ]);
     $this->payload["orderId"] = $id;
-    $this->payload["paymentId"] = $id."-".time();
+    $this->payload["paymentId"] = $id . "-" . time();
     return $this;
   }
 
@@ -85,6 +85,16 @@ class Labayar implements IProvider, IManualPay
     $this->payload["paymentMethod"] = $this->payment->getLabel();
     $this->payload["paymentType"] = $this->payment->getType();
     return $this;
+  }
+
+  /**
+   * Get payment method for every transaction
+   * 
+   * @return IMethod
+   */
+  public function getPaymentMethod(): IMethod
+  {
+    return $this->payment;
   }
 
   /**

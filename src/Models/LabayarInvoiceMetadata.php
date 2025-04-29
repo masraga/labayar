@@ -4,9 +4,9 @@ namespace Koderpedia\Labayar\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class LabayarInvoiceItem extends Model
+class LabayarInvoiceMetadata extends Model
 {
-  protected $table = "labayar_invoice_items";
+  protected $table = "labayar_invoice_metadata";
 
   /**
    * The attributes that are mass assignable.
@@ -15,10 +15,7 @@ class LabayarInvoiceItem extends Model
    */
   protected $fillable = [
     'invoice_id',
-    'name',
-    'price',
-    'quantity',
-    'product_id',
-    'type',
+    'key',
+    'value'
   ];
 }

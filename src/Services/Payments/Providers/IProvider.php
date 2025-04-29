@@ -37,6 +37,13 @@ interface IProvider
   public function setPaymentMethod(string $method, string $type);
 
   /**
+   * Get payment method for every transaction
+   * 
+   * @return IMethod
+   */
+  public function getPaymentMethod(): IMethod;
+
+  /**
    * Set customer for every transaction
    * 
    * @param mixed $customer Customer info

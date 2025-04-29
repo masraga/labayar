@@ -28,7 +28,8 @@ class LabayarInvoice extends Model
     return $this->hasMany(LabayarInvoicePayment::class, "invoice_id", "invoice_id");
   }
 
-  public function item(): HasMany {
+  public function item(): HasMany
+  {
     return $this->hasMany(LabayarInvoiceItem::class, "invoice_id", "invoice_id");
   }
 
@@ -40,5 +41,10 @@ class LabayarInvoice extends Model
   public function store(): BelongsTo
   {
     return $this->belongsTo(LabayarStore::class, "store_id", "store_id");
+  }
+
+  public function metadata(): HasMany
+  {
+    return $this->hasMany(LabayarInvoiceMetadata::class, "invoice_id", "invoice_id");
   }
 }

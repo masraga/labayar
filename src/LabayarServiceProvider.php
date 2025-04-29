@@ -12,7 +12,9 @@ class LabayarServiceProvider extends ServiceProvider
     $this->loadRoutesFrom(__DIR__ . "/Routes/api.php");
     if ($this->app->runningInConsole()) {
       $this->publishes([__DIR__ . "/../database/migrations" => database_path("migrations")], "migrations");
+      $this->publishes([__DIR__ . "/../database/seeders/LabayarSeeder.php" => database_path("seeders/LabayarSeeder.php")], "labayar-seeder");
       $this->publishes([__DIR__ . "/Resources/Public" => public_path("./")], "public");
+      $this->publishes([__DIR__ . "/Config" => config_path("./")]);;
     }
     // $this->loadViewsFrom(__DIR__ . "/../resources/views", "labayar");
     $this->loadViewsFrom(__DIR__ . "/Resources/Views", "labayar");

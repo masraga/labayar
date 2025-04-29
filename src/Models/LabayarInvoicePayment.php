@@ -4,6 +4,7 @@ namespace Koderpedia\Labayar\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class LabayarInvoicePayment extends Model
 {
@@ -32,5 +33,10 @@ class LabayarInvoicePayment extends Model
   public function invoice(): BelongsTo
   {
     return $this->belongsTo(LabayarInvoice::class, "invoice_id", "invoice_id");
+  }
+
+  public function metadata(): HasMany
+  {
+    return $this->hasMany(LabayarInvoiceMetadata::class, "invoice_id", "invoice_id");
   }
 }

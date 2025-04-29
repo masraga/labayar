@@ -43,7 +43,32 @@ interface IMethod
   /**
    * use this if payment have different logic to create transaction
    * 
+   * @param mixed $payload Transaciton payload
    * @return mixed
    */
-  public function createTransaction(): array;
+  public function createTransaction(array $payload): array;
+
+  /**
+   * Load supported payment type of payment gateway
+   * 
+   * @return mixed
+   */
+  public function loadSupportedPayment(): array;
+
+  /**
+   * Get tax of payment method
+   * 
+   * @param string $method Payment method
+   * @param string $type Payment type
+   * @return mixed
+   */
+  public function getTax(string $method, string $type): array;
+
+  /**
+   * Get payment status from payment gateway
+   * 
+   * @param string $paymentId Payment id from database
+   * @return mixed
+   */
+  public function getPaymentStatus(string $paymentId): array;
 }

@@ -31,18 +31,18 @@
           @foreach($payments as $payment)
           <tr>
             <td class="px-2 py-3 border-b border-slate-200 text-gray-600 text-sm">{{$i+1}}</td>
-            <td class="px-2 py-3 border-b border-slate-200 text-gray-600 text-sm">{{ucfirst($payment["payment_method"])}} - {{$payment["payment_type"]}}</td>
+            <td class="px-2 py-3 border-b border-slate-200 text-gray-600 text-sm">{{ucfirst($payment["gateway"])}} - {{$payment["payment_type"]}}</td>
             <td class="px-2 py-3 border-b border-slate-200 text-gray-600 text-sm">{{date("d-m-Y H:i:s", strtotime($payment["created_at"]))}}</td>
             <td class="px-2 py-3 border-b border-slate-200 text-gray-600 text-sm">{{\Koderpedia\Labayar\Utils\Str::toCurrency($payment["amount"])}}</td>
             <td class="px-2 py-3 border-b border-slate-200 text-gray-600 text-sm">{{\Koderpedia\Labayar\Utils\Str::toCurrency($payment["change"])}}</td>
             <td class="px-2 py-3 border-b border-slate-200 text-gray-600 text-sm">{{\Koderpedia\Labayar\Utils\Str::toCurrency($payment["nett_amount"])}}</td>
             <td class="px-2 py-3 border-b border-slate-200 text-gray-600 text-sm text-center">
               @if($payment["payment_status"] == \Koderpedia\Labayar\Utils\Constants::$paymentUnpaid)
-              <span class="text-gray-700 text-center bg-yellow-400 font-medium text-gray-700 px-2 py-[2px] rounded">Unpaid</span>
+              <span class="text-gray-700 text-center bg-yellow-400 font-medium px-2 py-[2px] rounded">Unpaid</span>
               @elseif($payment["payment_status"] == \Koderpedia\Labayar\Utils\Constants::$paymentPaid)
-              <span class="text-gray-700 text-center bg-green-600 font-medium text-white px-2 py-[2px] rounded">Paid</span>
+              <span class="text-center bg-green-600 font-medium text-white px-2 py-[2px] rounded">Paid</span>
               @elseif($payment["payment_status"] == \Koderpedia\Labayar\Utils\Constants::$paymentExpired)
-              <span class="text-white text-center bg-red-600 font-medium text-gray-700 px-2 py-[2px] rounded">Expired</span>
+              <span class="text-white text-center bg-red-600 font-medium px-2 py-[2px] rounded">Expired</span>
               @endif
             </td>
             <td class="px-2 py-3 border-b border-slate-200 text-gray-600 text-sm text-center">
@@ -50,11 +50,12 @@
                 @include("labayar::components.icons.menu")
               </label>
               <input type="checkbox" name="dropdown" id="dropdown-{{$i}}" class="peer hidden">
-              <div class="p-2 text-left peer-checked:block hidden rounded bg-white shadow absolute w-[100px]">
+              <div class="p-2 text-left peer-checked:block hidden rounded bg-white shadow absolute w-[150px]">
                 @if($payment["payment_status"] == \Koderpedia\Labayar\Utils\Constants::$paymentUnpaid)
                 <div class="mb-2 hover:font-medium"><a href="/api/labayar/pay/{{$payment['order_id']}}" target="_blank">Pay</a></div>
                 @endif
-                <div class="mb-2 hover:font-medium"><a href="/api/labayar/payment-status/{{$payment['order_id']}}" target="_blank">Detail</a></div>
+                <div class="mb-2 hover:font-medium"><a href=" /api/labayar/payment-status/{{$payment['order_id']}}" target="_blank">Detail</a></div>
+                <div class="mb-2 hover:font-medium"><a href="/api/labayar/payment/download/{{$payment['invoice_id']}}" target="_blank">Download Invoice</a></div>
               </div>
             </td>
           </tr>

@@ -2,6 +2,7 @@
 
 namespace Koderpedia\Labayar\Routes;
 
+use Dompdf\Dompdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Koderpedia\Labayar\Payment;
@@ -26,7 +27,7 @@ Route::get("/api/labayar/pay/{orderId}", function (Request $request, $orderId) {
   return Payment::UIPay($request);
 });
 
-Route::get("/api/labayar/orders", function(Request $request){
+Route::get("/api/labayar/orders", function (Request $request) {
   return Payment::UIListOrder($request->all());
 });
 
@@ -42,4 +43,18 @@ Route::get("/api/labayar/payments/{invoiceId}", function (Request $request, $inv
 Route::get("/api/labayar/payment-status/{orderId}", function (Request $request, $orderId) {
   $request = array_merge($request->all(), ["orderId" => $orderId]);
   return Payment::UIPaymentStatus($request);
+});
+
+Route::post("/api/labayar/snap", function (Request $request) {
+  $payment = new Payment($request["gateway"]);
+  return $payment->createSnapTransaction($request->all());
+});
+
+Route::post("/api/labayar/gateway/notification", function (Request $request) {
+  return Payment::gatewayNotif($request->all());
+});
+
+Route::get("/api/labayar/payment/download/{invoiceId}", function (Request $request, $invoiceId) {
+  $payload = array_merge($request->all(), ["invoiceId" => $invoiceId]);
+  return Payment::downloadInvoice($payload);
 });
