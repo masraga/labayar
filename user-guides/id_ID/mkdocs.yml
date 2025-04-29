@@ -1,0 +1,22 @@
+site_name: Labayar
+use_directory_urls: true
+nav:
+  - Home: index.md
+  - Pembayaran: payment.md
+  - Referensi API: api-ref.md
+  - Tentang: about.md
+theme:
+  name: material
+  palette:
+    scheme: default # atau: slate, dracula, etc.
+  features:
+    - content.code.copy # tombol salin
+    - content.code.annotate # dukung anotasi
+  highlightjs: true
+  hljs_languages: php
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.highlight:
+      linenums: true
+  - pymdownx.superfences
