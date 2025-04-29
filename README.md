@@ -66,6 +66,78 @@ php artisan serve
 
 ### Basic usage
 
+### Create transaction with payment gateway
+
+Currently labayar providing tripay payment gateway for handling transaction. We will always update more payment gateway soon.
+Before use tripay payment gateway, add this key to your .env
+| Key | Description |
+| ----------- | ----------- |
+| TRIPAY_IS_PRODUCTION | Use tripay production mode |
+| TRIPAY_MERCHANT_CODE | Tripay merchant code |
+| TRIPAY_API_KEY | Tripay API key |
+| TRIPAY_PRIVATE_KEY | Tripay private key |
+| TRIPAY_RETURN_URL | Tripay return url after payment success |
+
+Add this to your controller
+
+```php
+<?php
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Koderpedia\Labayar\Payment;
+class PaymentController extends Controller
+{
+    public function loadSnapLabayar(Request $request)
+    {
+        $payment = new Payment("tripay");
+        $payload = [
+            "orderId" => "inv-" . time(),
+            "customer" => [
+                "name" => "Raga mulia kusuma",
+                "email" => "real.ragamulia@gmail.com",
+                "phone" => "0891234567890"
+            ],
+            "expiry" => [
+                "unit" => "minutes",
+                "duration" => 60
+            ],
+            "items" => [
+                [
+                    "productId" => "prod12345",
+                    "name" => "Mangga harum manis pekanbaru",
+                    "quantity" => 10,
+                    "price" => 10000
+                ],
+                [
+                    "productId" => "prod12345",
+                    "name" => "Jeruk harum manis pekanbaru",
+                    "quantity" => 10,
+                    "price" => 10000
+                ],
+                [
+                    "productId" => "prod12345",
+                    "name" => "Strawberry harum manis pekanbaru",
+                    "quantity" => 10,
+                    "price" => 10000
+                ],
+            ]
+        ];
+        return $payment->UISnapLabayar($payload);
+    }
+}
+
+```
+
+> **Note:** All **$payload** value is similar with manual transaction value. But you dont need send **payAmount** key
+
+After that, you can add this controller method to your routes/web.php
+
+```php
+Route::get("/snap", [PaymentController::class, "loadSnapLabayar"]);
+```
+
+Open your browser and go to page **{{your_base_url}}/snap**. and enjoy :D
+
 ### Creating manual transaction
 
 You can create invoice to your order, add this to your controller. fill all value variable **$payload** with yours
@@ -140,78 +212,6 @@ http://localhost:8000/api/labayar/orders
 ```
 
 After that click an order you want to pay.
-
-### Create transaction with payment gateway
-
-Currently labayar providing tripay payment gateway for handling transaction. We will always update more payment gateway soon.
-Before use tripay payment gateway, add this key to your .env
-| Key | Description |
-| ----------- | ----------- |
-| TRIPAY_IS_PRODUCTION | Use tripay production mode |
-| TRIPAY_MERCHANT_CODE | Tripay merchant code |
-| TRIPAY_API_KEY | Tripay API key |
-| TRIPAY_PRIVATE_KEY | Tripay private key |
-| TRIPAY_RETURN_URL | Tripay return url after payment success |
-
-Add this to your controller
-
-```php
-<?php
-namespace App\Http\Controllers;
-use Illuminate\Http\Request;
-use Koderpedia\Labayar\Payment;
-class PaymentController extends Controller
-{
-    public function loadSnapLabayar(Request $request)
-    {
-        $payment = new Payment("tripay");
-        $payload = [
-            "orderId" => "inv-" . time(),
-            "customer" => [
-                "name" => "Raga mulia kusuma",
-                "email" => "real.ragamulia@gmail.com",
-                "phone" => "0891234567890"
-            ],
-            "expiry" => [
-                "unit" => "minutes",
-                "duration" => 60
-            ],
-            "items" => [
-                [
-                    "productId" => "prod12345",
-                    "name" => "Mangga harum manis pekanbaru",
-                    "quantity" => 10,
-                    "price" => 10000
-                ],
-                [
-                    "productId" => "prod12345",
-                    "name" => "Jeruk harum manis pekanbaru",
-                    "quantity" => 10,
-                    "price" => 10000
-                ],
-                [
-                    "productId" => "prod12345",
-                    "name" => "Strawberry harum manis pekanbaru",
-                    "quantity" => 10,
-                    "price" => 10000
-                ],
-            ]
-        ];
-        return $payment->UISnapLabayar($payload);
-    }
-}
-
-```
-
-> **Note:** All **$payload** value is similar with manual transaction value. But you dont need send **payAmount** key
-
-After that, you can add this controller method to your routes/web.php
-
-```php
-Route::get("/snap", [PaymentController::class, "loadSnapLabayar"]);
-```
-
-Open your browser and go to page **{{your_base_url}}/snap**. and enjoy :D
 
 ### Useful URL
 
