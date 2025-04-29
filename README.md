@@ -66,7 +66,7 @@ php artisan serve
 
 ### Basic usage
 
-#### Creating manual transaction
+### Creating manual transaction
 
 You can create invoice to your order, add this to your controller. fill all value variable **$payload** with yours
 
@@ -108,7 +108,7 @@ class PaymentController extends Controller
 }
 ```
 
-#### Pay transaction with core API
+### Pay transaction with core API
 
 Pay transaction that you create before. add this to your controller
 
@@ -125,7 +125,7 @@ public function payInvoice(Request $request){
 
 Note: Get **paymentId** payload from create transaction response
 
-#### Pay transaction with built in page
+### Pay transaction with built in page
 
 if you too busy to build common payment page, dont worry, labayar can handle that. redirect your laravel project to this url below.
 
@@ -141,7 +141,7 @@ http://localhost:8000/api/labayar/orders
 
 After that click an order you want to pay.
 
-#### Create transaction with payment gateway
+### Create transaction with payment gateway
 
 Currently labayar providing tripay payment gateway for handling transaction. We will always update more payment gateway soon.
 Before use tripay payment gateway, add this key to your .env
@@ -213,7 +213,7 @@ Route::get("/snap", [PaymentController::class, "loadSnapLabayar"]);
 
 Open your browser and go to page **{{your_base_url}}/snap**. and enjoy :D
 
-##### Useful URL
+### Useful URL
 
 Below is useful url will help to save your development time
 | Endpoint | Description |
@@ -222,6 +222,6 @@ Below is useful url will help to save your development time
 | /api/labayar/payments/{invoiceId} | Show all your payment in each order |
 | /api/labayar/payments/graph | Show sales graph |
 
-##### API Reference
+### API Reference
 
 - [postman](https://www.postman.com/orange-resonance-534979/workspace/labayar/collection/15555730-d6515741-160e-42a9-865a-1fbe98643e7f?action=share&creator=15555730)
