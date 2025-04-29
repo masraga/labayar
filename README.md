@@ -48,6 +48,10 @@ php artisan vendor:publish --provider=Koderpedia\Labayar\LabayarServiceProvider
 php artisan migrate
 ```
 
+```sh
+php artisan db:seed --class=LabayarSeeder
+```
+
 7. Setup your store information. Open .env file and add this below
 
 | Key                   | Description   |
