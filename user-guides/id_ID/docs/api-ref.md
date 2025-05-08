@@ -5,8 +5,8 @@
 Pembayaran invoice manual
 
 ```php
-use Koderpedia\Labayar\Payment;
 <?php
+use Koderpedia\Labayar\Payment;
 $paymentId = "inv-00001-12334";
 $amount = 40000;
 Payment::pay(["paymentId" => $paymentId, "amount" => $amount])
@@ -21,8 +21,8 @@ Payment::pay(["paymentId" => $paymentId, "amount" => $amount])
 API List order pembayaran
 
 ```php
-use Koderpedia\Labayar\Payment;
 <?php
+use Koderpedia\Labayar\Payment;
 $filter = [
   "invoiceId" => "inv-0001",
   "keyword" => "inv-0001",
