@@ -3,6 +3,8 @@
 $isPaymentGateway=false;
 $merchantName="";
 $merchantCode="";
+$paymentUrl="";
+$paymentUrlIsImage=false;
 @endphp
 @foreach($payment["metadata"] as $metadata)
 @if($metadata["key"] == \Koderpedia\Labayar\Utils\Constants::$isPaymentGateway)
@@ -18,6 +20,16 @@ $merchantName = $metadata['value'];
 @if($metadata["key"] == \Koderpedia\Labayar\Utils\Constants::$gatewayMerchantCode)
 @php
 $merchantCode = $metadata['value'];
+@endphp
+@endif
+@if($metadata["key"] == \Koderpedia\Labayar\Utils\Constants::$pgUrl)
+@php
+$paymentUrl = $metadata['value'];
+@endphp
+@endif
+@if($metadata["key"] == \Koderpedia\Labayar\Utils\Constants::$pgUrlIsImage)
+@php
+$paymentUrlIsImage = $metadata['value'];
 @endphp
 @endif
 @endforeach
@@ -81,6 +93,19 @@ $merchantCode = $metadata['value'];
           <div class="text-gray-500 text-sm mt-[3px]">Pay Code</div>
           <div class="font-medium text-gray-700">{{ucfirst($merchantCode)}}</div>
         </div>
+        @if($paymentUrl != "")
+        <div class="flex justify-between">
+          <div class="text-gray-500 text-sm mt-[3px]">Pay URL</div>
+          <div class="font-medium text-sky-500"><a class="text-sky-500" href="{{$paymentUrl}}">Pay Now !</a></div>
+        </div>
+        @if($paymentUrlIsImage)
+        <div class="flex justify-center">
+          <div>
+            <img src="{{$paymentUrl}}" class="w-[60%] m-auto" alt="">
+          </div>
+        </div>
+        @endif
+        @endif
         @endif
       </div>
     </div>

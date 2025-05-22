@@ -136,6 +136,20 @@ class Payment
               "key" => Constants::$gatewayMerchantCode,
               "value" => $payload["paymentGatewayResult"][Constants::$gatewayMerchantCode]
             ];
+            if (isset($payload["paymentGatewayResult"][Constants::$pgUrl])) {
+              $metadata[] = [
+                "invoice_id" => $invoice->invoice_id,
+                "key" => Constants::$pgUrl,
+                "value" => $payload["paymentGatewayResult"][Constants::$pgUrl]
+              ];
+            }
+            if (isset($payload["paymentGatewayResult"][Constants::$pgUrlIsImage])) {
+              $metadata[] = [
+                "invoice_id" => $invoice->invoice_id,
+                "key" => Constants::$pgUrlIsImage,
+                "value" => $payload["paymentGatewayResult"][Constants::$pgUrlIsImage]
+              ];
+            }
           }
           $metadata[] = [
             "invoice_id" => $invoice->invoice_id,

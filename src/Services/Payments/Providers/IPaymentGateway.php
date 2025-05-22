@@ -36,4 +36,12 @@ interface IPaymentGateway
    * @return mixed
    */
   public function getPaymentTax(string $method, string $type): array;
+
+  /**
+   * Map payment gateway result metadata
+   * 
+   * @param mixed $result Payment gateway result
+   * @return void
+   */
+  public function mapResult(array $result): void;
 }

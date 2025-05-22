@@ -11,6 +11,7 @@ use Koderpedia\Labayar\Repositories\Payment as PaymentRepo;
 use Koderpedia\Labayar\Repositories\Store;
 use Koderpedia\Labayar\Services\Payments\Providers\IManualPay;
 use Koderpedia\Labayar\Services\Payments\Providers\IPaymentGateway;
+use Koderpedia\Labayar\Services\Payments\Providers\Midtrans\Midtrans;
 use Koderpedia\Labayar\Services\Payments\Providers\Tripay\Tripay;
 use Koderpedia\Labayar\Utils\Constants;
 use Koderpedia\Labayar\Utils\Str;
@@ -43,6 +44,8 @@ class Payment
       $this->provider = new Labayar();
     } elseif ($provider == "tripay") {
       $this->provider = new Tripay();
+    } elseif ($provider == "midtrans") {
+      $this->provider = new Midtrans();
     } else {
       throw new Error("$provider not supported");
     }
@@ -94,7 +97,6 @@ class Payment
       $this->provider->setPayAmount($payAmount);
     };
     $newPayment = $this->provider->create();
-
     /**
      * is necessary if we use payment gateway, cause payment selector from FE has been mapped
      * with supported payment method of payment gateway. A selector must be save to db
@@ -141,6 +143,9 @@ class Payment
     }
     if ($payment["gateway"] == Tripay::getGateway()) {
       $provider = new Tripay();
+    }
+    if ($payment["gateway"] == Midtrans::getGateway()) {
+      $provider = new Midtrans();
     }
     $bill = PaymentRepo::pay($provider->setPaymentMethod($payment["method"], $payment["type"])->pay($payment));
     if (isset($request["useBuiltIn"])) {

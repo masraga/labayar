@@ -363,4 +363,24 @@ class PaymentSelector
       "width" => "80px",
     ];
   }
+
+  /**
+   * Load ewallet gopay object
+   * 
+   * @param float $taxFix Tax fix for payment gateway
+   * @param float $taxPercent Percentage tax for payment gateway
+   * @return mixed
+   */
+  public static function ewalletGopay(float $taxFix = 0, float $taxPercent = 0): array
+  {
+    return [
+      "taxFix" => $taxFix,
+      "taxPercent" => $taxPercent,
+      "name" => "Gopay Payment",
+      "code" => "gopay",
+      "image" => "/labayar-assets/images/gopay.png",
+      "height" => "120px",
+      "width" => "80px",
+    ];
+  }
 }

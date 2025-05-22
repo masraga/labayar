@@ -1,35 +1,28 @@
 <?php
 
-namespace Koderpedia\Labayar\Services\Payments\Providers\Tripay;
+namespace Koderpedia\Labayar\Services\Payments\Providers\Midtrans;
 
 use Error;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
+use \Illuminate\Support\Str;
 use Koderpedia\Labayar\Libraries\PaymentSelector;
 use Koderpedia\Labayar\Services\Payments\Providers\IMethod;
 use Koderpedia\Labayar\Services\Payments\Providers\IPaymentGateway;
 use Koderpedia\Labayar\Services\Payments\Providers\IProvider;
-use Koderpedia\Labayar\Services\Payments\Providers\Tripay\PaymentMethod\CloseTransaction;
+use Koderpedia\Labayar\Services\Payments\Providers\Midtrans\PaymentMethod\Ewallet;
 use Koderpedia\Labayar\Services\Payments\Traits\PaymentCalculator;
 use Koderpedia\Labayar\Utils\Constants;
 use Koderpedia\Labayar\Utils\Time;
 
-class Tripay implements IProvider, IPaymentGateway
+class Midtrans implements IProvider, IPaymentGateway
 {
   use PaymentCalculator;
-  /**
-   * Payment method open transaction
-   */
-  public const OPEN_TRANSACTION = "open";
-
-  /**
-   * Payment method close transaction
-   */
-  public const CLOSE_TRANSACTION = "close";
 
   /**
    * Gateway name of provider
    */
-  private static string $gateway = "tripay";
+  private static string $gateway = "midtrans";
 
   /**
    * Transaction payload
@@ -53,14 +46,14 @@ class Tripay implements IProvider, IPaymentGateway
 
   public function __construct()
   {
-    if (config("tripay.is_production")) {
-      $this->baseUrl = "https://tripay.co.id/api";
+    if (config("midtrans.is_production")) {
+      $this->baseUrl = "https://api.midtrans.com/v2";
     } else {
-      $this->baseUrl = "https://tripay.co.id/api-sandbox";
+      $this->baseUrl = "https://api.sandbox.midtrans.com/v2";
     }
     $this->authorization = [
       "Content-Type" => "application/json",
-      "Authorization" => "Bearer " . config("tripay.api_key")
+      "Authorization" => "Basic " . Str::toBase64(config("midtrans.server_key") . ":")
     ];
   }
 
@@ -115,7 +108,7 @@ class Tripay implements IProvider, IPaymentGateway
       "baseUrl" => $this->baseUrl,
       "authorization" => $this->authorization
     ];
-    $this->payment = new CloseTransaction($ops);
+    $this->payment = new Ewallet($ops);
     return $this;
   }
 
@@ -132,12 +125,13 @@ class Tripay implements IProvider, IPaymentGateway
       "baseUrl" => $this->baseUrl,
       "authorization" => $this->authorization
     ];
-    if ($method != self::OPEN_TRANSACTION && $method != self::CLOSE_TRANSACTION) {
-      throw new Error("$method not supported in labayar");
+    if ($method == Constants::$ewallet) {
+      $this->payment = new Ewallet($ops);
+    } else {
+      throw new Error("$method not supported in labayar", 412);
     }
     $this->payload["paymentMethod"] = $method;
     $this->payload["paymentType"] = $type;
-    $this->payment = new CloseTransaction($ops);
     return $this;
   }
 
@@ -203,14 +197,6 @@ class Tripay implements IProvider, IPaymentGateway
   }
 
   /**
-   * Map payment gateway result metadata
-   * 
-   * @param mixed $result Payment gateway result
-   * @return void
-   */
-  public function mapResult(array $result): void {}
-
-  /**
    * Create transaction for every payment
    * 
    * @return mixed
@@ -221,22 +207,47 @@ class Tripay implements IProvider, IPaymentGateway
     $this->payload["items"] = $order["items"];
     $this->payload["amount"] = $order["amount"];
     $this->payload["gateway"] = $this->getGateway();
-    $paymentGateway = $this->payment->use($this->payload["paymentType"])->createTransaction($this->payload);
-    $pgResult = [];
-    if (isset($paymentGateway["data"])) {
-      $paymentData = $paymentGateway["data"];
-      $paymentName = $paymentData["payment_name"];
-      /**
-       * Hardcode with linkita cause tripay use Linkita to pay bills over the counter
-       */
-      if (in_array($paymentData["payment_name"], ["Alfamart", "Alfamidi", "Indomaret"])) {
-        $paymentName .= " - Linkita";
+    $paymentPayload = $this->payment->use($this->payload["paymentType"])->createTransaction($this->payload);
+    $paymentPayload["item_details"] = $this->payload["items"];
+    $paymentPayload["customer_details"] = [
+      "first_name" => $this->payload["customer"]["name"],
+      "email" => $this->payload["customer"]["email"],
+      "phone" => $this->payload["customer"]["phone"],
+    ];
+    $httpRequest = Http::withHeaders($this->authorization)->post($this->baseUrl . "/charge", $paymentPayload);
+    $pgResult = array_merge($httpRequest->json(), $this->payload);
+    $this->mapResult($pgResult);
+    return $this->payload;
+  }
+
+  /**
+   * Map payment gateway result metadata
+   * 
+   * @param mixed $result Payment gateway result
+   * @return void
+   */
+  public function mapResult(array $result): void
+  {
+    if ($result["transaction_status"] == "pending") {
+      $paymentName = $result["payment_type"];
+      $paymentCode = $result["transaction_id"];
+      $paymentUrl = "";
+      $paymentUrlIsImage = false;
+      if (in_array($paymentName, ["gopay", "qris"])) {
+        $paymentUrlIsImage = true;
+        foreach ($result["actions"] as $action) {
+          if ($action["name"] == "generate-qr-code") {
+            $paymentUrl = $action["url"];
+            break;
+          }
+        }
       }
       $pgResult[Constants::$gatewayMerchantName] = $paymentName;
-      $pgResult[Constants::$gatewayMerchantCode] = $paymentGateway["data"]["pay_code"];
+      $pgResult[Constants::$gatewayMerchantCode] = $paymentCode;
+      $pgResult[Constants::$pgUrl] = $paymentUrl;
+      $pgResult[Constants::$pgUrlIsImage] = $paymentUrlIsImage;
+      $this->payload["paymentGatewayResult"] = $pgResult;
     }
-    $this->payload["paymentGatewayResult"] = $pgResult;
-    return $this->payload;
   }
 
   /**
@@ -293,36 +304,14 @@ class Tripay implements IProvider, IPaymentGateway
    */
   public function mapPaymentMethod(string $method, string $type): array
   {
-    $closeTransactions = [
-      Constants::$bank,
-      Constants::$merchant,
-      Constants::$ewallet,
-      Constants::$qris,
-    ];
     $types = [
-      PaymentSelector::vaPermata()["code"] => "PERMATAVA",
-      PaymentSelector::vaBni()["code"] => "BNIVA",
-      PaymentSelector::vaBri()["code"] => "BRIVA",
-      PaymentSelector::vaMandiri()["code"] => "MANDIRIVA",
-      PaymentSelector::vaBca()["code"] => "BCAVA",
-      PaymentSelector::vaMuamalat()["code"] => "MUAMALATVA",
-      PaymentSelector::vaCimb()["code"] => "CIMBVA",
-      PaymentSelector::vaBsi()["code"] => "BSIVA",
-      PaymentSelector::vaOcbc()["code"] => "OCBCVA",
-      PaymentSelector::vaDanamon()["code"] => "DANAMONVA",
-      PaymentSelector::merchantAlfamart()["code"] => "ALFAMART",
-      PaymentSelector::merchantIndomaret()["code"] => "INDOMARET",
-      PaymentSelector::merchantAlfamidi()["code"] => "ALFAMIDI",
-      PaymentSelector::ewalletOvo()["code"] => "OVO",
-      PaymentSelector::ewalletDana()["code"] => "DANA",
-      PaymentSelector::ewalletShoppePay()["code"] => "SHOPPEPAY",
-      PaymentSelector::qris()["code"] => "QRIS",
+      PaymentSelector::ewalletGopay()["code"] => "gopay",
+      PaymentSelector::qris()["code"] => "qris",
     ];
     $payment = [
-      "method" => "",
+      "method" => $method,
       "type" => ""
     ];
-    $payment["method"] = (in_array($method, $closeTransactions)) ? self::CLOSE_TRANSACTION : self::OPEN_TRANSACTION;
     $payment["type"] = $types[$type];
     $payment["selector"] = [
       "method" => $method,

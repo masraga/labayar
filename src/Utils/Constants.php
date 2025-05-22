@@ -86,4 +86,12 @@ class Constants
    * is use to be pay code if you do payment in counter
    */
   public static $gatewayMerchantCode = "merchantCode";
+  /**
+   * URL to pay payment gateway invoice, usually use to generate qris image
+   */
+  public static $pgUrl = "pgUrl";
+  /**
+   * Convert payment url to image or not
+   */
+  public static $pgUrlIsImage = "pgUrlIsImage";
 }
